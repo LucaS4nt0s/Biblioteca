@@ -113,24 +113,23 @@ $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <span class="status-alugado">Alugado</span>
                                     <?php endif; ?>
                                 </td>
-                               <td class="actions-cell">
+<td class="actions-cell">
     <?php
-    $has_actions = false; // Variável para controlar se alguma ação foi exibida
-
+    // Lógica para Clientes e Funcionários
     if ($livro['Disponivel']) {
+        // Se o livro está disponível, qualquer um pode reservar
         echo '<a href="reservar_livro.php?id=' . $livro['ID_Livro'] . '" class="btn btn-reserve">Reservar</a>';
-        $has_actions = true;
+    } else {
+        // Se o livro está alugado, apenas funcionários e admins podem devolver
+        if (in_array($_SESSION['user_tipo'], ['Funcionario', 'Admin'])) {
+            echo '<a href="devolver_livro.php?id=' . $livro['ID_Livro'] . '" class="btn btn-return">Devolver</a>';
+        }
     }
 
+    // Lógica adicional apenas para Admins
     if ($_SESSION['user_tipo'] === 'Admin') {
         echo '<a href="editar_livro.php?id=' . $livro['ID_Livro'] . '" class="btn btn-edit">Editar</a>';
         echo '<a href="excluir_livro.php?id=' . $livro['ID_Livro'] . '" class="btn btn-delete" onclick="return confirm(\'Tem certeza que deseja excluir este livro?\')">Excluir</a>';
-        $has_actions = true;
-    }
-
-    // Se nenhuma ação foi exibida para esta linha, imprime um espaço para manter a altura da célula.
-    if (!$has_actions) {
-        echo '&nbsp;';
     }
     ?>
 </td>
@@ -151,8 +150,8 @@ $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="footer-content">
                 <p>&copy; <?= date('Y') ?> Biblioteca Central. Todos os direitos reservados.</p>
                 <div class="footer-info">
-                    <p>Projeto Interdisciplinar - Banco de Dados I e Programação Web II</p>
-                    <p>Nomes: Celso Junior, Kauan Simão, Luca Samuel, Maria Eduarda.</p>
+                    <p>Projeto Interdisciplinar - Banco de Dados II e Programação Web II</p>
+                    <p>Nomes: Carlos Barbosa, Celso Junior, Kauan Simão, Luca Samuel, Maria Eduarda.</p>
                 </div>
             </div>
         </div>
