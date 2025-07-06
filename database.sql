@@ -169,3 +169,11 @@ BEGIN
     UPDATE Livros SET Disponivel = TRUE WHERE ID_Livro = OLD.ID_Livro;
 END$$
 DELIMITER ;
+
+UPDATE Usuarios
+SET Tipo = 'Admin'
+WHERE CPF = '111';
+
+UPDATE Usuarios
+SET Tipo = 'Funcionario'
+WHERE CPF = '222';
