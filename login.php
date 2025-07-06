@@ -1,40 +1,51 @@
 <?php
-session_start(); // Inicia a sessão NO TOPO do arquivo
+// Inicia a sessão para que possamos armazenar que o usuário está logado
+session_start();
 
-// Se o usuário já estiver logado, redireciona para a página principal
+// Se o usuário já tem uma sessão ativa, redireciona para a página principal
 if (isset($_SESSION['user_cpf'])) {
     header("Location: index.php");
     exit();
 }
 
+// Inclui o arquivo de conexão com o banco de dados
 require_once 'conexao.php';
 $error = '';
 
+// Verifica se o formulário foi enviado (método POST)
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST['email']);
     $senha = trim($_POST['senha']);
 
+    // Validação simples para garantir que os campos não estão vazios
     if (empty($email) || empty($senha)) {
         $error = "E-mail e senha são obrigatórios.";
     } else {
+        // Prepara a consulta SQL para buscar o usuário pelo e-mail
         $sql = "SELECT CPF, Nome, Senha, Tipo FROM Usuarios WHERE Email = ?";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$email]);
 
+        // Verifica se encontrou exatamente um usuário
         if ($stmt->rowCount() == 1) {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
-            // Verifica se a senha fornecida corresponde ao hash no banco
+
+            // A MÁGICA ACONTECE AQUI: Verifica se a senha digitada corresponde à senha criptografada no banco
             if (password_verify($senha, $user['Senha'])) {
-                // Senha correta, cria a sessão
+                // Senha correta! Cria as variáveis da sessão para "lembrar" do usuário
                 $_SESSION['user_cpf'] = $user['CPF'];
                 $_SESSION['user_nome'] = $user['Nome'];
                 $_SESSION['user_tipo'] = $user['Tipo'];
+
+                // Redireciona para a página principal do sistema
                 header("Location: index.php");
                 exit();
             } else {
+                // Senha incorreta
                 $error = "E-mail ou senha inválidos.";
             }
         } else {
+            // Nenhum usuário encontrado com o e-mail fornecido
             $error = "E-mail ou senha inválidos.";
         }
     }

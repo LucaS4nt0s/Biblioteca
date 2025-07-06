@@ -81,8 +81,10 @@ $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             <?php if (in_array($_SESSION['user_tipo'], ['Funcionario', 'Admin'])): ?>
                 <div class="admin-actions">
-                    <a href="adicionar_livro.php" class="btn btn-add">Adicionar Novo Livro</a>
-                </div>
+    <a href="adicionar_livro.php" class="btn btn-add">Adicionar Novo Livro</a>
+    
+    <a href="criar_usuario.php" class="btn btn-edit">Criar Novo Usuário</a>
+</div>
             <?php endif; ?>
 
             <table class="library-table">
