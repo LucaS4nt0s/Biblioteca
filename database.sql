@@ -60,8 +60,8 @@ CREATE TABLE Aluguel(
 -- INSERÇÃO DE DADOS (Mínimo 3 tuplas por tabela)
 INSERT INTO Usuarios (CPF, Nome, Email, Senha, Endereco, Telefone, Tipo) VALUES
 -- Admin Padrão com senha 'admin123'
-('000.000.000-00', 'Administrador', 'admin@biblioteca.com', '$2y$10$w/flm5B6p2m3Lq5sP1XqU.VqY05sD.uWnYlJzRyspsoJm2S6j7O/S', 'Sede da Biblioteca', '(00) 00000-0000', 'Admin'),
-
+('00000000000', 'Administrador', 'admin@biblioteca.com', '$2y$10$w/flm5B6p2m3Lq5sP1XqU.VqY05sD.uWnYlJzRyspsoJm2S6j7O/S', 'Sede da Biblioteca', '(00) 00000-0000', 'Admin'),
+														
 -- Outros usuários
 ('111.111.111-11', 'Maria Joaquina', 'maria@email.com', '$2y$10$2/H.tB/wR8H6O2jY4Z3k4uSlYv3sE5C9C8c8g8A7B6d6e5F4g3h2i1', 'Rua 1, 10', '(35) 99988-7766', 'Cliente'),
 ('222.222.222-22', 'Luca Santos', 'luca@email.com', '$2y$10$a1B2c3D4e5F6g7H8i9J0k.lM1n2O3p4Q5r6S7t8U9v0w1x2y3z4A5', 'Rua 2, 20', '(35) 98866-3344', 'Funcionario'),
@@ -174,12 +174,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-UPDATE Usuarios
-SET Tipo = 'Admin'
-WHERE CPF = '111';
+# UPDATE Usuarios SET Tipo = 'Admin' WHERE Email = 'admin@admin';
 
-UPDATE Usuarios
-SET Tipo = 'Funcionario'
-WHERE CPF = '222';
-
-UPDATE Usuarios SET Tipo = 'Admin' WHERE Email = 'admin@biblioteca.com';
+# ALTER TABLE Livros ADD COLUMN Ativo BOOLEAN NOT NULL DEFAULT TRUE;
