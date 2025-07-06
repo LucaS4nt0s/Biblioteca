@@ -3,19 +3,17 @@ DROP DATABASE IF EXISTS biblioteca_bd;
 CREATE DATABASE biblioteca_bd;
 USE biblioteca_bd;
 
--- Tabela Usuarios (baseada na entidade Pessoa [cite: 4, 5])
--- Simplifica a especialização de Cliente/Funcionário  usando um campo 'Tipo'.
+-- Execute todo este bloco de uma vez
 CREATE TABLE Usuarios(
     CPF VARCHAR(14) PRIMARY KEY,
     Nome VARCHAR(100) NOT NULL,
     Email VARCHAR(100) NOT NULL UNIQUE,
-    Senha VARCHAR(255) NOT NULL, -- Essencial para um sistema web
+    Senha VARCHAR(255) NOT NULL,
     Endereco VARCHAR(255) NOT NULL,
     Telefone VARCHAR(20) NOT NULL,
     Tipo VARCHAR(20) CHECK (Tipo IN ('Cliente', 'Funcionario', 'Admin')) NOT NULL DEFAULT 'Cliente'
 );
 
--- Tabela Funcionarios (especialização de Pessoa/Usuarios [cite: 10, 11])
 CREATE TABLE Funcionarios(
     CPF VARCHAR(14) PRIMARY KEY,
     Salario FLOAT NOT NULL,
@@ -23,7 +21,6 @@ CREATE TABLE Funcionarios(
     FOREIGN KEY (CPF) REFERENCES Usuarios(CPF) ON DELETE CASCADE
 );
 
--- Tabela Editoras [cite: 13, 16]
 CREATE TABLE Editoras(
     ID_Editora INT PRIMARY KEY AUTO_INCREMENT,
     Nome VARCHAR(100) NOT NULL,
@@ -31,7 +28,6 @@ CREATE TABLE Editoras(
     Telefone VARCHAR(20) NOT NULL
 );
 
--- Tabela Autores [cite: 14, 18]
 CREATE TABLE Autores(
     ID_Autor INT PRIMARY KEY AUTO_INCREMENT,
     Nome VARCHAR(100) NOT NULL,
@@ -39,7 +35,6 @@ CREATE TABLE Autores(
     Nacionalidade VARCHAR(50)
 );
 
--- Tabela Livros [cite: 15, 20]
 CREATE TABLE Livros(
     ID_Livro INT PRIMARY KEY AUTO_INCREMENT,
     Titulo VARCHAR(100) NOT NULL,
@@ -48,12 +43,11 @@ CREATE TABLE Livros(
     Estante VARCHAR(10) NOT NULL,
     ID_Editora INT,
     ID_Autor INT,
-    Disponivel BOOLEAN DEFAULT TRUE, -- Campo extra útil para controle de aluguel
+    Disponivel BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (ID_Editora) REFERENCES Editoras(ID_Editora),
     FOREIGN KEY (ID_Autor) REFERENCES Autores(ID_Autor)
 );
 
--- Tabela Aluguel [cite: 22, 23]
 CREATE TABLE Aluguel(
     ID_Aluguel INT PRIMARY KEY AUTO_INCREMENT,
     CPF VARCHAR(14) NOT NULL,
@@ -63,7 +57,6 @@ CREATE TABLE Aluguel(
     FOREIGN KEY (CPF) REFERENCES Usuarios(CPF),
     FOREIGN KEY (ID_Livro) REFERENCES Livros(ID_Livro)
 );
-
 -- INSERÇÃO DE DADOS (Mínimo 3 tuplas por tabela)
 INSERT INTO Usuarios (CPF, Nome, Email, Senha, Endereco, Telefone, Tipo) VALUES
 ('111.111.111-11', 'Maria Joaquina', 'maria@email.com', '123', 'Rua 1, 10', '(35) 99988-7766', 'Cliente'),
@@ -85,7 +78,7 @@ INSERT INTO Autores (Nome, Data_Nascimento, Nacionalidade) VALUES
 ('Agatha Christie', '1890-09-15', 'Britânica');
 
 INSERT INTO Livros (Titulo, Data_Publicacao, Categoria, Estante, ID_Editora, ID_Autor) VALUES
-('Um Estudo em Vermelho', '1887-11-01', 'Mistério', 'A1', 2),
+('Um Estudo em Vermelho', '1887-11-01', 'Mistério', 'A1', 2, 1), -- CORREÇÃO: Adicionado o ID_Autor '1' que faltava
 ('Harry Potter e a Pedra Filosofal', '1997-06-26', 'Fantasia', 'B2', 1, 2),
 ('Assassinato no Expresso do Oriente', '1934-01-01', 'Mistério', 'A1', 3, 3),
 ('O Cão dos Baskervilles', '1902-08-01', 'Mistério', 'A2', 2, 1);

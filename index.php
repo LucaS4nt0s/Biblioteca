@@ -3,17 +3,21 @@
 session_start();
 
 // VERIFICAÇÃO DE LOGIN: Se o usuário não estiver logado, redireciona para a página de login.
-// Esta é a parte que protege a página.
 if (!isset($_SESSION['user_cpf'])) {
     header("Location: login.php");
     exit(); // Encerra o script para garantir que o resto do código não seja executado
 }
 
-// O resto do código só será executado se o usuário estiver logado
+// LÓGICA DA BUSCA VAZIA: Se o campo 'busca' foi enviado, mas está vazio, redireciona para a página limpa
+if (isset($_GET['busca']) && trim($_GET['busca']) === '') {
+    header("Location: index.php");
+    exit();
+}
+
 require_once 'conexao.php';
 
 // Lógica de busca
-$search_term = $_GET['busca'] ?? ''; // Pega o termo de busca da URL, se existir
+$search_term = $_GET['busca'] ?? '';
 $search_query = "";
 
 if (!empty($search_term)) {
@@ -22,6 +26,7 @@ if (!empty($search_term)) {
 
 // Consulta SQL para buscar os livros e seus detalhes
 $sql = "SELECT
+            l.ID_Livro,
             l.Titulo,
             l.Categoria,
             l.Estante,
@@ -40,7 +45,6 @@ if (!empty($search_term)) {
 }
 $stmt->execute();
 $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -75,6 +79,12 @@ $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </form>
             </div>
 
+            <?php if (in_array($_SESSION['user_tipo'], ['Funcionario', 'Admin'])): ?>
+                <div class="admin-actions">
+                    <a href="adicionar_livro.php" class="btn btn-add">Adicionar Novo Livro</a>
+                </div>
+            <?php endif; ?>
+
             <table class="library-table">
                 <thead>
                     <tr>
@@ -82,8 +92,9 @@ $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <th>Autor</th>
                         <th>Editora</th>
                         <th>Categoria</th>
-                        <th>Localização (Estante)</th>
+                        <th>Localização</th>
                         <th>Status</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -102,16 +113,37 @@ $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <span class="status-alugado">Alugado</span>
                                     <?php endif; ?>
                                 </td>
+                               <td class="actions-cell">
+    <?php
+    $has_actions = false; // Variável para controlar se alguma ação foi exibida
+
+    if ($livro['Disponivel']) {
+        echo '<a href="reservar_livro.php?id=' . $livro['ID_Livro'] . '" class="btn btn-reserve">Reservar</a>';
+        $has_actions = true;
+    }
+
+    if ($_SESSION['user_tipo'] === 'Admin') {
+        echo '<a href="editar_livro.php?id=' . $livro['ID_Livro'] . '" class="btn btn-edit">Editar</a>';
+        echo '<a href="excluir_livro.php?id=' . $livro['ID_Livro'] . '" class="btn btn-delete" onclick="return confirm(\'Tem certeza que deseja excluir este livro?\')">Excluir</a>';
+        $has_actions = true;
+    }
+
+    // Se nenhuma ação foi exibida para esta linha, imprime um espaço para manter a altura da célula.
+    if (!$has_actions) {
+        echo '&nbsp;';
+    }
+    ?>
+</td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="6" style="text-align:center;">Nenhum livro encontrado no acervo.</td>
+                            <td colspan="7" style="text-align:center;">Nenhum livro encontrado no acervo.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
-            </div>
+        </div>
     </main>
 
     <footer class="main-footer">
@@ -125,6 +157,5 @@ $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </footer>
-
 </body>
 </html>

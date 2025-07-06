@@ -247,3 +247,48 @@ body {
     border-radius: 4px;
     margin-bottom: 20px;
 }
+/* Adicione ao final do seu css/style.css */
+
+.admin-actions {
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.actions-cell {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 4px;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 0.9em;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.btn:hover {
+    opacity: 0.8;
+}
+
+.btn-add {
+    background-color: #28a745; /* Verde */
+}
+
+.btn-reserve {
+    background-color: #007bff; /* Azul */
+}
+
+.btn-edit {
+    background-color: #ffc107; /* Amarelo */
+    color: #333;
+}
+
+.btn-delete {
+    background-color: #dc3545; /* Vermelho */
+}
