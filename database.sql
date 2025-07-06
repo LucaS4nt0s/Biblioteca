@@ -139,3 +139,33 @@ SELECT
 FROM Livros
 GROUP BY Categoria
 ORDER BY Quantidade DESC;
+
+DELIMITER $$
+CREATE TRIGGER tg_after_insert_aluguel
+AFTER INSERT ON Aluguel
+FOR EACH ROW
+BEGIN
+    UPDATE Livros SET Disponivel = FALSE WHERE ID_Livro = NEW.ID_Livro;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER tg_after_update_aluguel
+AFTER UPDATE ON Aluguel
+FOR EACH ROW
+BEGIN
+    -- Se a data de devolução foi preenchida, o livro volta a ficar disponível
+    IF NEW.Data_Devolucao IS NOT NULL THEN
+        UPDATE Livros SET Disponivel = TRUE WHERE ID_Livro = NEW.ID_Livro;
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER tg_after_delete_aluguel
+AFTER DELETE ON Aluguel
+FOR EACH ROW
+BEGIN
+    UPDATE Livros SET Disponivel = TRUE WHERE ID_Livro = OLD.ID_Livro;
+END$$
+DELIMITER ;
