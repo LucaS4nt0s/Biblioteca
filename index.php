@@ -1,17 +1,26 @@
 <?php
-// Inclui o arquivo de conexão
+// Inicia a sessão para verificar o login
+session_start();
+
+// VERIFICAÇÃO DE LOGIN: Se o usuário não estiver logado, redireciona para a página de login.
+// Esta é a parte que protege a página.
+if (!isset($_SESSION['user_cpf'])) {
+    header("Location: login.php");
+    exit(); // Encerra o script para garantir que o resto do código não seja executado
+}
+
+// O resto do código só será executado se o usuário estiver logado
 require_once 'conexao.php';
 
 // Lógica de busca
+$search_term = $_GET['busca'] ?? ''; // Pega o termo de busca da URL, se existir
 $search_query = "";
-$search_term = '';
-if (isset($_GET['busca']) && !empty($_GET['busca'])) {
-    $search_term = $_GET['busca'];
-    // Usa a cláusula OR para buscar em vários campos
+
+if (!empty($search_term)) {
     $search_query = "WHERE l.Titulo LIKE :busca OR a.Nome LIKE :busca OR e.Nome LIKE :busca";
 }
 
-// Consulta principal para buscar livros com detalhes do autor e editora
+// Consulta SQL para buscar os livros e seus detalhes
 $sql = "SELECT
             l.Titulo,
             l.Categoria,
@@ -26,11 +35,9 @@ $sql = "SELECT
         ORDER BY l.Titulo ASC";
 
 $stmt = $pdo->prepare($sql);
-
-if (!empty($search_query)) {
+if (!empty($search_term)) {
     $stmt->bindValue(':busca', '%' . $search_term . '%');
 }
-
 $stmt->execute();
 $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -44,16 +51,14 @@ $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
     <header class="main-header">
         <div class="container">
             <div class="header-content">
                 <a href="index.php" class="logo">Biblioteca Central</a>
                 <nav class="main-nav">
                     <ul>
-                        <li><a href="index.php">Início</a></li>
-                        <li><a href="#">Minha Conta</a></li>
-                        <li><a href="#">Contato</a></li>
+                        <li><span>Olá, <?= htmlspecialchars($_SESSION['user_nome']) ?>!</span></li>
+                        <li><a href="logout.php">Sair</a></li>
                     </ul>
                 </nav>
             </div>
@@ -101,21 +106,21 @@ $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="6" style="text-align:center;">Nenhum livro encontrado.</td>
+                            <td colspan="6" style="text-align:center;">Nenhum livro encontrado no acervo.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
-        </div>
+            </div>
     </main>
 
     <footer class="main-footer">
         <div class="container">
             <div class="footer-content">
-                <p>&copy; 2025 Biblioteca Central. Todos os direitos reservados.</p>
+                <p>&copy; <?= date('Y') ?> Biblioteca Central. Todos os direitos reservados.</p>
                 <div class="footer-info">
                     <p>Projeto Interdisciplinar - Banco de Dados I e Programação Web II</p>
-                    [cite_start]<p>Nomes: Celso Junior, Kauan Simão, Luca Samuel, Maria Eduarda. [cite: 1]</p>
+                    <p>Nomes: Celso Junior, Kauan Simão, Luca Samuel, Maria Eduarda.</p>
                 </div>
             </div>
         </div>
