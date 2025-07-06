@@ -108,8 +108,8 @@ O sistema não permite o cadastro público de administradores por segurança. Pa
 
 Este projeto foi desenvolvido por:
 
-  * Carlos Barbosa [GitHub](
-  * Celso Junior [GitHub](
-  * Kauan Simão [GitHub](
-  * Luca Samuel [GitHub](
-  * Maria Eduarda [GitHub](
+  * Carlos Barbosa [GitHub](https://github.com/c4rlosfb)
+  * Celso Junior [GitHub](https://github.com/celsohd21)
+  * Kauan Simão [GitHub](https://github.com/MariaEduardaBatt)
+  * Luca Samuel [GitHub](https://github.com/LucaS4nt0s)
+  * Maria Eduarda [GitHub](https://github.com/MariaEduardaBatt)
