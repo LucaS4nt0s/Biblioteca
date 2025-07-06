@@ -1,6 +1,6 @@
 <?php
 
-function includeHeaderSemLogout() {
+function includeHeader() {
     echo '<header>';
         echo '<nav>';
             echo '<ul class="main-menu">';
@@ -12,10 +12,11 @@ function includeHeaderSemLogout() {
             echo '<ul class="user-menu">';
                 echo '<li><a href="php/cadastro.php">Cadastrar</a></li>';
                 echo '<li><a href="php/login.php">Login</a></li>';
+                echo '<li><a href="php/logout.php">Sair</a></li>';
             echo '</ul>';
         echo '</nav>';
     echo '</header>';
 };
 
-includeHeaderSemLogout();
+includeHeader();
 ?>

@@ -2,23 +2,18 @@ create database biblioteca_bd;
 
 use biblioteca_bd;
 
-create table Pessoas(
-CPF varchar(11) primary key,
+create table Usuarios(
+CPF int primary key,
 Nome varchar(100) not null,
-Telefone varchar(20) not null,
-Endereco varchar(200) not null,
-Tipo varchar(11) check (Tipo in ('Cliente', 'Funcionario')) not null);
-
-create table Clientes(
-CPF varchar(11) primary key,
 Email varchar(100) not null unique,
-foreign key (CPF) references Pessoas(CPF) on delete cascade);
+Senha varchar(255) not null,
+Tipo varchar(20) check (Tipo in ('Cliente', 'Funcionario', 'Admin')) not null default 'Cliente');
 
 create table Funcionarios(
-CPF varchar(11) primary key,
+CPF int primary key,
 Salario float not null, 
 Funcao varchar(50) not null,
-foreign key (CPF) references Pessoas(CPF) on delete cascade);
+foreign key (CPF) references Usuarios(CPF) on delete cascade);
 
 create table Editoras(
 ID_Editora int primary key auto_increment,
@@ -49,10 +44,11 @@ CPF varchar(11) not null,
 ID_Livro int not null,
 Data_Saida date default(current_timestamp()),
 Data_Devolucao date default(null),
-foreign key (CPF) references Pessoas(CPF) on delete cascade,
+foreign key (CPF) references Usuarios(CPF) on delete cascade,
 foreign key (ID_Livro) references Livros(ID_Livro) on delete cascade);
 
-insert into Pessoas(CPF, Nome, Telefone, Endereco, Tipo) values 
+insert into Usuarios(CPF, Nome, Telefone, Endereco, Tipo) values 
+('000.000.000', 'Admin', '31999999999', 'Rua 1', 'Admin'),
 ('111.111.111', 'Luca Samuel', '35999998888', 'Rua 2', 'Funcionario'),
 ('222.222.111', 'Maria Eduarda', '35988888888', 'Rua 3', 'Funcionario'),
 ('333.333.333', 'Celso Oliveira', '35977778888', 'Rua 4', 'Funcionario'),
@@ -60,16 +56,11 @@ insert into Pessoas(CPF, Nome, Telefone, Endereco, Tipo) values
 ('555.555.555', 'Carlos Felipe', '35955558888', 'Rua 6', 'Cliente'),
 ('666.666.666', 'João Guilherme', '35944448888', 'Rua 7', 'Cliente');
 
-insert into Clientes(CPF, Email) values 
-('444.444.444', 'kauan.simao@email.com'),
-('555.555.555', 'carlos.felipe@email.com'),
-('666.666.666', 'joao.guilherme@email.com');
-
 insert into Funcionarios(CPF, Salario, Funcao) values 
 ('111.111.111', 2500.00, 'Gerente'),
 ('222.222.111', 2000.00, 'Atendente'),
 ('333.333.333', 1800.00, 'Estoquista');
-
+=
 insert into Editoras(Nome, Endereco, Telefone) values 
 ('Suma', 'Av. Central, 1000', '31999998888'),
 ('Rocco', 'Rua das Flores, 200', '31988888888'),
